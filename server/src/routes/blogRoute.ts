@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
+import { multerUpload } from "src/config/multer";
 import ExpressError from "../lib/ExpressError";
+import { uploadImages } from "../lib/ImageUpload";
 import Blog from "../models/Blog";
 const router = express.Router();
 
@@ -26,6 +28,7 @@ router.get(
 // post blog
 router.post(
 	"/blogs",
+	multerUpload.array("photos", 5),
 	async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { title, content } = req.body;
@@ -33,9 +36,13 @@ router.post(
 				throw new ExpressError("Title and Content not provided");
 			}
 
+			// upload images
+			const images = await uploadImages(req);
+
 			let blog = new Blog({
 				title,
 				content,
+				images,
 			});
 
 			blog = await blog.save();

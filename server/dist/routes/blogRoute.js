@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const multer_1 = require("src/config/multer");
 const ExpressError_1 = __importDefault(require("../lib/ExpressError"));
 const Blog_1 = __importDefault(require("../models/Blog"));
 const router = express_1.default.Router();
@@ -20,7 +21,7 @@ router.get("/blogs/:id", async (req, res, next) => {
         next(err);
     }
 });
-router.post("/blogs", async (req, res, next) => {
+router.post("/blogs", multer_1.multerUpload.array("photos", 5), async (req, res, next) => {
     try {
         const { title, content } = req.body;
         if (!title || !content) {
