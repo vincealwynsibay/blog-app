@@ -13,6 +13,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const db_1 = __importDefault(require("./config/db"));
 const authRoute_1 = __importDefault(require("./routes/authRoute"));
+const blogRoute_1 = __importDefault(require("./routes/blogRoute"));
 const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
 const { createClient } = require("redis");
 const app = (0, express_1.default)();
@@ -42,6 +43,7 @@ app.get("/ping", (_req, res) => {
     res.json("ping");
 });
 app.use("/api/auth", authRoute_1.default);
+app.use("/api/blogs", blogRoute_1.default);
 app.use((err, _req, res, _next) => {
     return res.status(err.status || 500).json({ error: err.message });
 });

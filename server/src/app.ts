@@ -8,6 +8,7 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import connectDB from "./config/db";
 import authRoute from "./routes/authRoute";
+import blogRoute from "./routes/blogRoute";
 const RedisStore = connectRedis(session);
 
 // redis@v4
@@ -53,6 +54,7 @@ app.get("/ping", (_req, res) => {
 });
 
 app.use("/api/auth", authRoute);
+app.use("/api/blogs", blogRoute);
 
 // error handler
 app.use((err: any, _req: Request, res: Response, _next: any) => {

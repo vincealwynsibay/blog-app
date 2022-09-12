@@ -81,13 +81,10 @@ router.post(
 // me
 router.get("/me", async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		console.log(req.session.userId);
 		if (!req.session.userId) {
-			throw new ExpressError("Not Authenticated", 401);
+			return res.json({ user: null });
 		}
-
 		const user = await User.findById(req.session.userId);
-
 		return res.json({ user });
 	} catch (err) {
 		next(err);
@@ -98,7 +95,7 @@ router.get(
 	async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			req.session.destroy(() => {
-				res.clearCookie("uid", {
+				res.clearCookie("qid", {
 					path: "/",
 					domain: "localhost",
 				});

@@ -4,8 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const multer_1 = require("src/config/multer");
+const multer_1 = require("../config/multer");
 const ExpressError_1 = __importDefault(require("../lib/ExpressError"));
+const ImageUpload_1 = require("../lib/ImageUpload");
 const Blog_1 = __importDefault(require("../models/Blog"));
 const router = express_1.default.Router();
 router.get("/blogs/:id", async (req, res, next) => {
@@ -27,9 +28,11 @@ router.post("/blogs", multer_1.multerUpload.array("photos", 5), async (req, res,
         if (!title || !content) {
             throw new ExpressError_1.default("Title and Content not provided");
         }
+        const images = await (0, ImageUpload_1.uploadImages)(req);
         let blog = new Blog_1.default({
             title,
             content,
+            images,
         });
         blog = await blog.save();
         return res.json({ blog });

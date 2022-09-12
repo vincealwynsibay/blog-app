@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-import { multerUpload } from "src/config/multer";
+import { multerUpload } from "../config/multer";
 import ExpressError from "../lib/ExpressError";
 import { uploadImages } from "../lib/ImageUpload";
 import Blog from "../models/Blog";
