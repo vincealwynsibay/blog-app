@@ -14,11 +14,9 @@ const blogSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
-    images: [
-        {
-            type: String,
-        },
-    ],
+    image: {
+        type: String,
+    },
 });
 const Blog = (0, mongoose_1.model)("Blog", blogSchema);
 exports.default = Blog;

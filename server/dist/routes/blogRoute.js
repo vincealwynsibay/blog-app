@@ -9,7 +9,16 @@ const ExpressError_1 = __importDefault(require("../lib/ExpressError"));
 const ImageUpload_1 = require("../lib/ImageUpload");
 const Blog_1 = __importDefault(require("../models/Blog"));
 const router = express_1.default.Router();
-router.get("/blogs/:id", async (req, res, next) => {
+router.get("/", async (_req, res, next) => {
+    try {
+        const blogs = await Blog_1.default.find();
+        return res.json({ blogs });
+    }
+    catch (err) {
+        next(err);
+    }
+});
+router.get("/:id", async (req, res, next) => {
     try {
         const { id } = req.params;
         const blog = await Blog_1.default.findById(id);
@@ -22,17 +31,19 @@ router.get("/blogs/:id", async (req, res, next) => {
         next(err);
     }
 });
-router.post("/blogs", multer_1.multerUpload.array("photos", 5), async (req, res, next) => {
+router.post("/", multer_1.multerUpload.single("image"), async (req, res, next) => {
     try {
         const { title, content } = req.body;
         if (!title || !content) {
             throw new ExpressError_1.default("Title and Content not provided");
         }
-        const images = await (0, ImageUpload_1.uploadImages)(req);
+        console.log("body:", req.body);
+        console.log("file:", req.file);
+        const image = await (0, ImageUpload_1.uploadImage)(req);
         let blog = new Blog_1.default({
             title,
             content,
-            images,
+            image,
         });
         blog = await blog.save();
         return res.json({ blog });
@@ -41,7 +52,7 @@ router.post("/blogs", multer_1.multerUpload.array("photos", 5), async (req, res,
         next(err);
     }
 });
-router.put("/blogs/:id", async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
     try {
         const { title, content } = req.body;
         const { id } = req.params;
@@ -61,7 +72,7 @@ router.put("/blogs/:id", async (req, res, next) => {
         next(err);
     }
 });
-router.delete("/blogs/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
     try {
         const { id } = req.params;
         let blog = await Blog_1.default.findByIdAndDelete(id);

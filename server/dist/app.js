@@ -14,6 +14,7 @@ const connect_redis_1 = __importDefault(require("connect-redis"));
 const db_1 = __importDefault(require("./config/db"));
 const authRoute_1 = __importDefault(require("./routes/authRoute"));
 const blogRoute_1 = __importDefault(require("./routes/blogRoute"));
+const cloudinary_1 = require("./config/cloudinary");
 const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
 const { createClient } = require("redis");
 const app = (0, express_1.default)();
@@ -39,6 +40,7 @@ app.use((0, cors_1.default)({
 app.use((0, morgan_1.default)("dev"));
 app.use(body_parser_1.default.json());
 (0, db_1.default)();
+(0, cloudinary_1.configureCloudinary)();
 app.get("/ping", (_req, res) => {
     res.json("ping");
 });

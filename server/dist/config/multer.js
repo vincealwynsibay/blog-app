@@ -10,8 +10,8 @@ const path_1 = __importDefault(require("path"));
 const storage = multer_1.default.memoryStorage();
 const parser = new parser_1.default();
 exports.multerUpload = (0, multer_1.default)({ storage });
-const dataUri = (req) => {
-    return parser.format(path_1.default.extname(req.file.originalname).toString(), req.file.buffer);
+const dataUri = (file) => {
+    return parser.format(path_1.default.extname(file.originalname).toString(), file.buffer);
 };
 exports.dataUri = dataUri;
 //# sourceMappingURL=multer.js.map

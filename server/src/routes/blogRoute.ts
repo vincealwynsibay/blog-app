@@ -1,48 +1,58 @@
 import express, { NextFunction, Request, Response } from "express";
 import { multerUpload } from "../config/multer";
 import ExpressError from "../lib/ExpressError";
-import { uploadImages } from "../lib/ImageUpload";
+import { uploadImage, uploadImages } from "../lib/ImageUpload";
 import Blog from "../models/Blog";
 const router = express.Router();
 
 // get all blogs w/ pagination using limit and skip query
-// get blog by id
-router.get(
-	"/blogs/:id",
-	async (req: Request, res: Response, next: NextFunction) => {
-		try {
-			const { id } = req.params;
+router.get("/", async (_req: Request, res: Response, next: NextFunction) => {
+	try {
+		const blogs = await Blog.find();
 
-			const blog = await Blog.findById(id);
-
-			if (!blog) {
-				throw new ExpressError("Blog not found", 404);
-			}
-
-			return res.json({ blog });
-		} catch (err) {
-			next(err);
-		}
+		return res.json({ blogs });
+	} catch (err) {
+		next(err);
 	}
-);
+});
+// get blog by id
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { id } = req.params;
+
+		const blog = await Blog.findById(id);
+
+		if (!blog) {
+			throw new ExpressError("Blog not found", 404);
+		}
+
+		return res.json({ blog });
+	} catch (err) {
+		next(err);
+	}
+});
 // post blog
 router.post(
-	"/blogs",
-	multerUpload.array("photos", 5),
+	"/",
+	multerUpload.single("image"),
 	async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { title, content } = req.body;
+
 			if (!title || !content) {
 				throw new ExpressError("Title and Content not provided");
 			}
 
+			console.log("body:", req.body);
+			console.log("file:", req.file);
+
 			// upload images
-			const images = await uploadImages(req);
+			const image = await uploadImage(req);
 
 			let blog = new Blog({
 				title,
 				content,
-				images,
+				image,
 			});
 
 			blog = await blog.save();
@@ -55,37 +65,34 @@ router.post(
 );
 
 // edit blog
-router.put(
-	"/blogs/:id",
-	async (req: Request, res: Response, next: NextFunction) => {
-		try {
-			const { title, content } = req.body;
-			const { id } = req.params;
+router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { title, content } = req.body;
+		const { id } = req.params;
 
-			if (!title || !content) {
-				throw new ExpressError("Title and Content not provided");
-			}
-
-			const blog = await Blog.findById(id);
-
-			if (!blog) {
-				throw new ExpressError("Blog not found", 404);
-			}
-
-			blog.title = title;
-			blog.content = content;
-
-			await blog.save();
-
-			return res.json({ blog });
-		} catch (err) {
-			next(err);
+		if (!title || !content) {
+			throw new ExpressError("Title and Content not provided");
 		}
+
+		const blog = await Blog.findById(id);
+
+		if (!blog) {
+			throw new ExpressError("Blog not found", 404);
+		}
+
+		blog.title = title;
+		blog.content = content;
+
+		await blog.save();
+
+		return res.json({ blog });
+	} catch (err) {
+		next(err);
 	}
-);
+});
 // delete blog
 router.delete(
-	"/blogs/:id",
+	"/:id",
 	async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { id } = req.params;

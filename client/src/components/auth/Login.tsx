@@ -58,6 +58,7 @@ const Login = (props: Props) => {
 						value={formData.password}
 					/>
 				</div>
+
 				<p>
 					Don't have an account yet?{" "}
 					<Link to='/register'>Register</Link>

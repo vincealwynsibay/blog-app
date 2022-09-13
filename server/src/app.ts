@@ -9,6 +9,7 @@ import connectRedis from "connect-redis";
 import connectDB from "./config/db";
 import authRoute from "./routes/authRoute";
 import blogRoute from "./routes/blogRoute";
+import { configureCloudinary } from "./config/cloudinary";
 const RedisStore = connectRedis(session);
 
 // redis@v4
@@ -48,6 +49,8 @@ app.use(bodyParser.json());
 
 // run db
 connectDB();
+// configure cloudinary
+configureCloudinary();
 
 app.get("/ping", (_req, res) => {
 	res.json("ping");

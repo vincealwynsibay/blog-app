@@ -13,11 +13,9 @@ const blogSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	images: [
-		{
-			type: String,
-		},
-	],
+	image: {
+		type: String,
+	},
 });
 
 const Blog = model("Blog", blogSchema);

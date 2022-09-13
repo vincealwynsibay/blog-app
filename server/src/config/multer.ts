@@ -10,9 +10,9 @@ const parser = new DatauriParser();
 export const multerUpload = multer({ storage });
 
 // parses file
-export const dataUri = (req: any) => {
+export const dataUri = (file: any) => {
 	return parser.format(
-		path.extname(req.file.originalname).toString(),
-		req.file.buffer
+		path.extname(file.originalname).toString(),
+		file.buffer
 	);
 };
